@@ -1,0 +1,6 @@
+*.s
+*.o
+a.out
+result
+score
+output
