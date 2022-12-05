@@ -76,13 +76,48 @@ void free_poly(poly_t *p) {
   }
 }
 
-void sort_poly(poly_t *p) {
-  poly_t *current = p;
-  bool sw = true;
+poly_t *mul(poly_t *p1, poly_t *p2) {
   int temp_coeff, temp_exp;
+  bool sw = true;
+  poly_t *prod = calloc(1, sizeof(poly_t));
+  poly_t *current = prod;
+  poly_t *current_p1 = p1;
+  poly_t *current_p2 = p2;
+
+  // multiply
+  while (current_p1 != NULL) {
+    while (current_p2 != NULL) {
+      current->coeff = current_p1->coeff * current_p2->coeff;
+      current->exp = current_p1->exp + current_p2->exp;
+      current->next = calloc(1, sizeof(poly_t));
+
+      current = current->next;
+      current_p2 = current_p2->next;
+    }
+    current_p2 = p2;
+    current_p1 = current_p1->next;
+  }
+
+  // shorten
+  current = prod;
+  while (current != NULL) {
+    current_p1 = current;
+    while (current_p1 != NULL && current_p1->next != NULL) {
+      if (current->exp == current_p1->next->exp) {
+        current->coeff += current_p1->next->coeff;
+        current_p2 = current_p1->next;
+        current_p1->next = current_p1->next->next;
+        free(current_p2);
+      }
+      current_p1 = current_p1->next;
+    }
+    current = current->next;
+  }
+
+  // sort poly
   while (sw) {
     sw = false;
-    current = p;
+    current = prod;
     while (current != NULL && current->next != NULL &&
            current->next->next != NULL) {
       if (current->next->exp < current->next->next->exp) {
@@ -97,47 +132,6 @@ void sort_poly(poly_t *p) {
       current = current->next;
     }
   }
-}
-
-void shorten(poly_t *p) {
-  poly_t *current = p;
-  poly_t *other;
-  poly_t *temp;
-  while (current != NULL) {
-    other = current;
-    while (other != NULL && other->next != NULL) {
-      if (current->exp == other->next->exp) {
-        current->coeff += other->next->coeff;
-        temp = other->next;
-        other->next = other->next->next;
-        free(temp);
-      }
-      other = other->next;
-    }
-    current = current->next;
-  }
-}
-
-poly_t *mul(poly_t *p1, poly_t *p2) {
-  poly_t *prod = calloc(1, sizeof(poly_t));
-  poly_t *current = prod;
-  poly_t *current_p1 = p1;
-  poly_t *current_p2 = p2;
-
-  while (current_p1 != NULL) {
-    while (current_p2 != NULL) {
-      current->coeff = current_p1->coeff * current_p2->coeff;
-      current->exp = current_p1->exp + current_p2->exp;
-      current->next = calloc(1, sizeof(poly_t));
-
-      current = current->next;
-      current_p2 = current_p2->next;
-    }
-    current_p2 = p2;
-    current_p1 = current_p1->next;
-  }
-  shorten(prod);
-  sort_poly(prod);
   return prod;
 }
 
