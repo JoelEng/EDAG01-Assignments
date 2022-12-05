@@ -26,9 +26,9 @@ static void poly_test(const char *a, const char *b) {
 }
 
 int main(void) {
-  poly_test("x^2 - 7x + 1", "3x + 2");
-  putchar('\n');
-  poly_test("x^10000000 + 2", "2x^2 + 3x + 4");
+  poly_test("-642x^113 - 113x^37 - 653x^19 - 330", "427x^32 - 594");
+  // putchar('\n');
+  // poly_test("x^10000000 + 2", "2x^2 + 3x + 4");
 
   return 0;
 }
