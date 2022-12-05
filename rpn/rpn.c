@@ -4,25 +4,24 @@
 
 #define N (10)
 
-static unsigned int stack[N];
-
 int main() {
-  unsigned int c, l = 1, len = 0, e;
+  unsigned int stack[N];
+  unsigned int c, l = 1, len = 0, e, n = 0;
   int a, b;
   while ((c = getchar()) != EOF) {
     // printf("c: %c;\n", c);
     if (isdigit(c)) {
-      a = 0;
-      while (isdigit(c)) {
-        a = a * 10 + (c - '0');
-        c = getchar();
-      }
+      n = n * 10 + (c - '0');
       // printf("i: %d\n", a);
       if (len == 10) {
-        e = a + '0';
+        e = n + '0';
         goto error;
       }
-      stack[len++] = a; // push to stack
+      continue;
+    }
+    if (n > 0) {
+      stack[len++] = n; // push num to stack
+      n = 0;
     }
 
     switch (c) {
